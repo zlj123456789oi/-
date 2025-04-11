@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增用户管理2')"/>
+
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>联心菜市场</title>
+    <!--大屏-->
+    <link type="text/css" href="/css/public.css" rel="stylesheet">
+    <link type="text/css" href="/css/icon.css" rel="stylesheet">
+    <link type="text/css" href="/css/index.css" rel="stylesheet">
+    <script type="text/javascript">
+        document.documentElement.style.fontSize = document.documentElement.clientWidth / 768 * 100 + 'px';
+    </script>
+
+    <script src="/js/echarts.min.js"></script>
+</head>
+<style>
+    .abc {
+
+    }
+
+</style>
+
+<body>
+<div class="bg">
+    <div class="title">网络流量分析</div>
+    <div class="leftMain">
+        <div class="leftMain_top">
+            <!-- 数据包总统计-->
+            <div class="leftMain_topIn">
+
+                <ul>
+                    <li>
+                        <div class="liIn">
+                            <h3>数据包总数量</h3>
+
+
+                            <p class="shu"><span class="shu1" th:text="${PackSum.packetCount}">6890.69</span><i>个</i></p>
+<!--                            <div class="zi"><span class="span1">小标题：文字</span><span>小标题：文字</span></div>-->
+                            <span class="border_bg_leftTop"></span>
+                            <span class="border_bg_rightTop"></span>
+                            <span class="border_bg_leftBottom"></span>
+                            <span class="border_bg_rightBottom"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="liIn">
+                            <h3>Packet数据包数量</h3>
+                            <p class="shu"><span class="shu2" th:text="${PackSum.packetPacketCount}">6890.69</span><i>个</i></p>
+<!--                            <div class="zi"><span class="span1">小标题：文字</span><span>小标题：文字</span></div>-->
+                            <span class="border_bg_leftTop"></span>
+                            <span class="border_bg_rightTop"></span>
+                            <span class="border_bg_leftBottom"></span>
+                            <span class="border_bg_rightBottom"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="liIn">
+                            <h3>TCP截取数据长度</h3>
+                            <p class="shu"><span class="shu3" th:text="${PackSum.tcpPacketLength}">6890.69</span><i>字</i></p>
+<!--                            <div class="zi"><span class="span1">小标题：文字</span><span>小标题：文字</span></div>-->
+                            <span class="border_bg_leftTop"></span>
+                            <span class="border_bg_rightTop"></span>
+                            <span class="border_bg_leftBottom"></span>
+                            <span class="border_bg_rightBottom"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="liIn">
+                            <h3>UDP截取数据长度</h3>
+                            <p class="shu"><span class="shu4" th:text="${PackSum.udpPacketLength}">6890.69</span><i>字</i></p>
+<!--                            <div class="zi"><span class="span1">小标题：文字</span><span>小标题：文字</span></div>-->
+                            <span class="border_bg_leftTop"></span>
+                            <span class="border_bg_rightTop"></span>
+                            <span class="border_bg_leftBottom"></span>
+                            <span class="border_bg_rightBottom"></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="leftMain_middle">
+            <div class="leftMain_middle_left">
+<!--                竖状图-->
+                <div class="leftMain_middle_leftIn">
+                    <h3>目的port分布前六</h3>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div class="biaoge" style="width:100%; height:25vh" id="chartmain"></div>
+                    <script th:inline="javascript">  //注意
+
+                    var plist = [[${PacketPort}]];
+                    console.log(plist);
+                    var arrayX = [];
+                    var arrayY = [];
+                    // 使用 map 函数将数据分别存储到两个数组中
+                    plist.map(item => {
+                        arrayX.push(item.key);
+                        arrayY.push(item.value);
+                    });
+                    console.log(arrayX);
+                    console.log(arrayY);
+
+
+                    //window.onload = function () {
+                    //指定图表的配置项和数据
+                    var dataAxis = arrayX;
+                    var data = arrayY;
+                    var yMax = 20;
+                    var dataShadow = [];
+
+                    for (var i = 0; i < data.length; i++) {
+                        dataShadow.push(yMax);
+                    }
+
+                    option = {
+                        title: {
+                            text: '',
+                            subtext: ''
+                        },
+                        grid: {
+                            x: 40,
+                            y: 40,
+                            x2: 20,
+                            y2: 20,
+
+                        },
+                        xAxis: {
+                            data: dataAxis,
+                            axisLabel: {
+                                /*inside: true,*/
+                                interval: 0,
+                                textStyle: {
+                                    color: '#fff',
+                                    fontSize: 12
+
+                                }
+                            },
+                            axisTick: {
+                                show: false,
+                            },
+                            axisLine: {
+                                show: true,
+                                symbol: ['none', 'arrow'],
+                                symbolOffset: 12,
+                                lineStyle: {
+                                    color: '#fff',
+                                }
+                            },
+                            z: 10
+                        },
+                        yAxis: {
+                            type: 'value',
+                            name: '单位：元',
+                            axisLine: {
+                                show: true,
+                                symbol: ['none', 'arrow'],
+                                symbolOffset: 12,
+                                lineStyle: {
+                                    color: '#fff',
+                                }
+                            },
+                            axisTick: {
+                                show: false
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: '#fff',
+                                    fontSize: 12
+                                }
+                            }
+                        },
+
+                        dataZoom: [
+                            {
+                                type: 'inside'
+                            }
+                        ],
+                        series: [
+                            { // For shadow
+                                type: 'bar',
+                                itemStyle: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                },
+                                barGap: '-100%',
+                                barCategoryGap: '40%',
+                                data: dataShadow,
+                                animation: false
+                            },
+                            {
+                                type: 'bar',
+                                itemStyle: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#0efdff'},
+                                            {offset: 0.5, color: '#188df0'},
+                                            {offset: 1, color: '#188df0'}
+                                        ]
+                                    )
+                                },
+                                emphasis: {
+                                    itemStyle: {
+                                        color: new echarts.graphic.LinearGradient(
+                                            0, 0, 0, 1,
+                                            [
+                                                {offset: 0, color: '#2378f7'},
+                                                {offset: 0.7, color: '#2378f7'},
+                                                {offset: 1, color: '#0efdff'}
+                                            ]
+                                        )
+                                    }
+                                },
+                                data: data
+                            }
+                        ]
+                    };
+
+                    // Enable data zoom when user click bar.
+                    /*var zoomSize = 6;
+                    myChart.on('click', function (params) {
+                        console.log(dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)]);
+                        myChart.dispatchAction({
+                            type: 'dataZoom',
+                            startValue: dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)],
+                            endValue: dataAxis[Math.min(params.dataIndex + zoomSize / 2, data.length - 1)]
+                        });
+                    });*/
+
+                    //获取dom容器
+                    var myChart = echarts.init(document.getElementById('chartmain'));
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    //};
+                    </script>
+                    <span class="border_bg_leftTop"></span>
+                    <span class="border_bg_rightTop"></span>
+                    <span class="border_bg_leftBottom"></span>
+                    <span class="border_bg_rightBottom"></span>
+                </div>
+            </div>
+            <div class="leftMain_middle_right">
+<!--                最中间的横条统计-->
+                <div class="leftMain_middle_rightIn">
+                    <h3>目标IP前五占比</h3>
+                    <div class="biaoge biaoge_pai" style="width:100%; height:25vh">
+                        <div class="biaoge_paiIn">
+
+                            <ul>
+                                <!-- Iterate over resultport and display each item -->
+                                <li th:each="item : ${PacketIP}">
+                                    <div class="liIn liIn6">
+                                        <div class="liIn_left"><span class="bot"></span><span class="zi" th:text="${ item.key}"></span></div>
+                                        <div class="liIn_line">
+                                            <div class="line_lineIn" th:style="'width:' + ${item.value} + '%;'"></div>
+                                        </div>
+                                        <p class="num" th:text="${item.value + '%'}"></p>
+                                    </div>
+                                </li>
+                            </ul>
+
+
+
+                        </div>
+                    </div>
+                    <span class="border_bg_leftTop"></span>
+                    <span class="border_bg_rightTop"></span>
+                    <span class="border_bg_leftBottom"></span>
+                    <span class="border_bg_rightBottom"></span>
+                </div>
+            </div>
+        </div>
+        <div class="leftMain_middle">
+<!--            折线图  ？？？-->
+            <div class="leftMain_middle_left">
+                <div class="leftMain_middle_leftIn">
+                    <h3>捕获数据包时间图</h3>
+                    <div class="biaoge" style="width:100%; height:25vh" id="chartmain_zhe"></div>
+                    <script th:inline="javascript">  //注意
+                        //window.onload = function (){
+                        //指定图表的配置项和数据
+                        var plist = [[${TimePeriods}]];
+                        console.log(plist);
+                        var arrayX = [];
+                        var arrayY = [];
+                        // 使用 map 函数将数据分别存储到两个数组中
+                        plist.map(item => {
+                            arrayX.push(item.key);
+                            arrayY.push(item.value);
+                        });
+                        console.log(arrayX);
+                        console.log(arrayY);
+
+                        option = {
+                            title: {
+                                text: ''
+                            },
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            legend: {
+                                textStyle: {
+                                    color: '#fff',
+                                    fontSize: 12,
+                                },
+                                right: '10%',
+                                data: ['时间序列']
+                            },
+                            grid: {
+                                x: 40,
+                                y: 40,
+                                x2: 20,
+                                y2: 20,
+                            },
+                            toolbox: {
+                                feature: {
+                                    //saveAsImage: {}
+                                }
+                            },
+                            xAxis: {
+                                type: 'category',
+                                boundaryGap: false,
+                                axisLabel: {
+                                    /*inside: true,*/
+                                    interval: 0,
+                                    textStyle: {
+                                        color: '#fff',
+                                        fontSize: 12
+
+                                    }
+                                },
+                                axisTick: {
+                                    show: false,
+                                },
+                                axisLine: {
+                                    show: true,
+                                    symbol: ['none', 'arrow'],
+                                    symbolOffset: 12,
+                                    lineStyle: {
+                                        color: '#fff',
+                                    }
+                                },
+                                data: []//'00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00'
+                            },
+                            yAxis: {
+                                type: 'value',
+
+                                axisLine: {
+                                    show: true,
+                                    symbol: ['none', 'arrow'],
+                                    symbolOffset: 12,
+                                    lineStyle: {
+                                        color: '#fff',
+                                    }
+                                },
+                                axisTick: {
+                                    show: false
+                                },
+                                axisLabel: {
+                                    textStyle: {
+                                        color: '#fff',
+                                        fontSize: 12
+                                    }
+                                }
+                            },
+                            series: [
+                                {
+                                    name: '时间序列',
+                                    type: 'line',
+                                    stack: '总量',
+                                    data: arrayY,
+                                    itemStyle: {
+                                        normal: {
+                                            color: "#0efdff",//折线点的颜色
+                                            lineStyle: {
+                                                color: "#0efdff",//折线的颜色
+                                                width: 2,
+                                            }
+                                        },
+                                    }
+                                },
+
+                            ]
+                        };
+                        //获取dom容器
+                        var myChart = echarts.init(document.getElementById('chartmain_zhe'));
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                        //};
+                    </script>
+                    <span class="border_bg_leftTop"></span>
+                    <span class="border_bg_rightTop"></span>
+                    <span class="border_bg_leftBottom"></span>
+                    <span class="border_bg_rightBottom"></span>
+                </div>
+            </div>
+             <!--下面的数字  已经完成-->
+            <div class="leftMain_middle_right">
+                <div class="leftMain_middle_rightIn">
+                    <h3>数据包各种类数量</h3>
+                    <div class="biaoge biaoge_bi" style="width:100%; height:25vh">
+                        <ul>
+                            <li>
+                                <div class="liIn">
+                                    <p class="shu shu1" th:text="${PackSum.ipPacketCount}">45</p>
+                                    <p class="zi">IP数据包数量</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="liIn">
+                                    <p class="shu shu2" th:text="${PackSum.tcpPacketCount}">45</p>
+                                    <p class="zi">TCP数据包数量</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="liIn">
+                                    <p class="shu shu3" th:text="${PackSum.udpPacketCount}">45</p>
+                                    <p class="zi">UDP数据包数量</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="liIn">
+                                    <p class="shu shu4" th:text="${PackSum.icmpPacketCount}">45</p>
+                                    <p class="zi">ICMP数据包数量</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="liIn">
+                                    <p class="shu shu5" th:text="${PackSum.arpPacketCount}">45</p>
+                                    <p class="zi">ARP数据包数量</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="liIn">
+                                    <p class="shu shu6" th:text="${PackSum.elsePacketCount}">45</p>
+                                    <p class="zi">其他数据包数量</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <span class="border_bg_leftTop"></span>
+                    <span class="border_bg_rightTop"></span>
+                    <span class="border_bg_leftBottom"></span>
+                    <span class="border_bg_rightBottom"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rightMain">
+        <div class="rightMain_top">
+
+<!--            右边的饼状图  完成-->
+            <div class="rightMain_topIn">
+                <h3>数据包种类占比</h3>
+                <div class="biaoge" style="width:100%; height:30vh" id="chartmain_bing"></div>
+                <script th:inline="javascript">  //注意
+
+                    var plist = [[${PacketType}]];
+                    console.log(plist);
+                    var arrayX = [];
+                    var arrayY = [];
+                    // 使用 map 函数将数据分别存储到两个数组中
+                    plist.map(item => {
+                        arrayX.push(item.key);
+                        arrayY.push(item.value);
+                    });
+                    console.log(arrayX);
+                    console.log(arrayY);
+                // 转换为新数组
+                let newArray = plist.map(item => ({
+                    value: parseInt(item.value), // 将字符串转换为整数
+                    name: item.key // 将 key 属性更名为 name
+                }));
+                    option = {
+                        title: {
+                            text: '数据情况统计',
+                            subtext: '',
+                            left: 'right',
+                            textStyle: {
+                                color: '#fff',
+                                fontSize: 12
+                            }
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: '{a} <br/>{b} : {c} ({d}%)'
+                        },
+                        legend: {
+                            // orient: 'vertical',
+                            // top: 'middle',
+                            type: 'scroll',
+                            orient: 'vertical',
+                            right: 10,
+                            top: 40,
+                            bottom: 20,
+                            left: 'right',
+                            data: arrayX,
+                            textStyle: {
+                                color: '#fff',
+                                fontSize: 12
+                            }
+
+                        },
+                        grid: {
+                            x: '-10%',
+                            y: 40,
+                            x2: 20,
+                            y2: 20,
+                        },
+                        color: ['#09d0fb', '#f88cfb', '#95f8fe', '#f9f390', '#ecfeb7'],
+                        series: [
+                            {
+                                type: 'pie',
+                                radius: '65%',
+                                center: ['50%', '50%'],
+                                selectedMode: 'single',
+                                data: newArray,
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    //获取dom容器
+                    var myChart = echarts.init(document.getElementById('chartmain_bing'));
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+
+                </script>
+                <span class="border_bg_leftTop"></span>
+                <span class="border_bg_rightTop"></span>
+                <span class="border_bg_leftBottom"></span>
+                <span class="border_bg_rightBottom"></span>
+            </div>
+        </div>
+
+
+<!--        下面的滚动展示  完成-->
+        <div class="rightMain_bottom">
+            <div class="rightMain_bottomIn">
+                <h3>各数据包详细数据</h3>
+                <div class="biaoge biaoge_list" style="width:100%; height:36vh">
+                    <div class="biaoge_listIn">
+                        <ul class="ul_title">
+                            <li>id</li>
+
+                            <li>包种类</li>
+                            <li>截取长度</li>
+                            <li>源端口</li>
+                            <li>目的端口</li>
+                        </ul>
+
+                        <div class="ul_list">
+                            <div class="ul_listIn">
+
+                                <ul th:each="packetInfo : ${packetInfoList}" class="ul_con">
+                                    <li th:text="${packetInfo.id}"></li>
+                                    <li th:text="${packetInfo.packetType}"></li>
+                                    <li th:text="${packetInfo.length}"></li>
+
+                                    <li th:text="${packetInfo.sourcePort}"></li>
+                                    <li th:text="${packetInfo.destinationPort}"></li>
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <span class="border_bg_leftTop"></span>
+                <span class="border_bg_rightTop"></span>
+                <span class="border_bg_leftBottom"></span>
+                <span class="border_bg_rightBottom"></span>
+            </div>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+</div>
+<!--大屏-->
+<!--数字增长累加动画-->
+<script src="/js/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="/js/jquery.numscroll.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    $(".shu1").numScroll();
+    $(".shu2").numScroll();
+    $(".shu3").numScroll();
+    $(".shu4").numScroll();
+    $(".shu5").numScroll();
+    $(".shu6").numScroll();
+
+    /*$(".num2").numScroll({
+        time:5000
+    });*/
+</script>
+<!--大屏-->
+</body>
+</html>

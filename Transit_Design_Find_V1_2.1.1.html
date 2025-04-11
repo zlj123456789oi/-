@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('网络包列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId" action="/flow/find" method="post">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <label class="font-noraml">选择网卡</label>
+
+                            <select name="card" id="card" class="form-control" required>
+                                <option value="" selected>抓捕网卡：</option>
+                                <option th:each="card, cardIndex : ${cards}" th:value="${cardIndex.index}" th:text="${card}"></option>
+                            </select>
+                        </li>
+
+
+                        <li>
+                            <label class="font-noraml">抓包模式</label>
+                            <select class="form-control" name="moshi" id="moshi">
+                                <option value="1">混杂模式</option>
+                                <option value="0">普通模式</option>
+                            </select>
+
+                        </li>
+
+                        <li>
+                            <label>抓包时间：</label>
+                            <input type="text" name="miao" id="miao" placeholder="秒数"/>
+                        </li>
+                        <li>
+                            <label>抓包规则：</label>
+                            <input type="text" name="guize" id="guize" placeholder="可为空"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="submitForm()"><i
+                                    class="fa fa-search"></i>&nbsp;抓包
+                            </a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+
+        <div class="col-sm-12 select-table table-striped">
+
+
+            规则介绍
+
+            <div style="margin: 10px; padding: 15px; border: 1px solid #ccc;">
+
+                <!-- 选择网卡 模块 -->
+                <div style="margin-bottom: 10px;">
+                    <h3 style="color: #3366cc;">选择网卡</h3>
+                    <p style="font-size: 14px; line-height: 1.4;">
+                        在这个模块中，您可以选择用于进行网络流量分析的网络接口卡（网卡）。选择正确的网卡对于准确捕获特定网络流量非常重要。
+                    </p>
+                </div>
+
+                <!-- 抓包模式 模块 -->
+                <div style="margin-bottom: 10px;">
+                    <h3 style="color: #3366cc;">抓包模式</h3>
+                    <p style="font-size: 14px; line-height: 1.4;">
+                        抓包模式定义了网络流量分析系统捕获数据包的方式。常见的抓包模式包括混杂模式、统计模式等。选择适当的抓包模式可满足不同的分析需求。
+                    </p>
+                </div>
+
+                <!-- 抓包时间 模块 -->
+                <div style="margin-bottom: 10px;">
+                    <h3 style="color: #3366cc;">抓包时间</h3>
+                    <p style="font-size: 14px; line-height: 1.4;">
+                        在这个模块中，您可以指定进行网络流量抓包的时间范围。这对于分析特定时间段内的网络活动非常有用。
+                    </p>
+                </div>
+
+                <!-- 抓包规则 模块 -->
+                <div>
+                    <h3 style="color: #3366cc;">抓包规则</h3>
+                    <p style="font-size: 14px; line-height: 1.4;">
+                        抓包规则定义了系统捕获数据包的条件。您可以设置过滤规则，只捕获符合特定条件的数据包，以便更精确地进行网络分析。
+                    </p>
+                </div>
+
+            </div>
+
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+
+<script>
+
+    function submitForm() {
+
+        // 获取表单数据
+        var card = $('#card').val();
+        var moshi = $('#moshi').val();
+        var miao = $('#miao').val();
+        var guize = $('#guize').val();
+
+
+        layer.msg("正在抓包，请耐心等待");
+
+        // 使用Ajax提交表单
+        $.ajax(
+            {
+            type: 'POST',  // 请求类型
+            url: '/flow/getpacket',  // 你的API端点URL
+            data: {
+                card,moshi,miao,guize
+            },  // 将JavaScript对象转换为JSON字符串
+            dataType: "json",
+
+            success: function (response) {  // 请求成功后的回调函数
+                // console.log(response);
+
+                layer.msg("抓包成功，请查看抓包结果")
+                // window.location.href = "/flow";
+            }
+            // error: function (error) {  // 请求失败后的回调函数
+            //     console.log(error);
+            // }
+        });
+    }
+</script>
+<!--    <script th:inline="javascript">-->
+
+<!--        var prefix =  "flow";-->
+<!--        var flowlist = [[${flowlist}]];-->
+
+<!--        $(function() {-->
+<!--            var options = {-->
+<!--                // url: prefix + "/list",-->
+<!--                // createUrl: prefix + "/add",-->
+<!--                // updateUrl: prefix + "/edit/{id}",-->
+<!--                // removeUrl: prefix + "/remove",-->
+<!--                // exportUrl: prefix + "/export",-->
+
+<!--                data: flowlist,-->
+<!--                pagination: false,-->
+<!--                showSearch: false,-->
+
+<!--                showRefresh: false,-->
+<!--                showToggle: false,-->
+<!--                showColumns: false,-->
+<!--                sidePagination: "client",-->
+
+<!--                modalName: "网络包",-->
+<!--                columns: [{-->
+<!--                    checkbox: true-->
+<!--                },-->
+<!--                {-->
+<!--                    field: 'id',-->
+<!--                    title: '',-->
+<!--                    visible: false-->
+<!--                },-->
+<!--                {-->
+<!--                    field: 'timestamp',-->
+<!--                    title: '时间戳'-->
+<!--                },-->
+<!--                {-->
+<!--                    field: 'sourceIPAddress',-->
+<!--                    title: '源IP'-->
+<!--                },-->
+<!--                {-->
+<!--                    field: 'destinationIPAddress',-->
+<!--                    title: '目标IP'-->
+<!--                },-->
+<!--                {-->
+<!--                    field: 'sourceMACAddress',-->
+<!--                    title: '源MAC'-->
+<!--                },-->
+<!--                {-->
+<!--                    field: 'destinationMACAddress',-->
+<!--                    title: '目标MAC'-->
+<!--                },-->
+<!--                {-->
+<!--                    field: 'length',-->
+<!--                    title: '数据包长度'-->
+<!--                },-->
+<!--                {-->
+<!--                    field: 'packetType',-->
+<!--                    title: '数据包类型'-->
+<!--                },-->
+<!--                {-->
+<!--                    field: 'sourcePort',-->
+<!--                    title: '源端口号'-->
+<!--                },-->
+<!--                {-->
+<!--                    field: 'destinationPort',-->
+<!--                    title: '目标端口号'-->
+<!--                }-->
+<!--                ]-->
+<!--            };-->
+<!--            $.table.init(options);-->
+<!--        });-->
+
+
+<!--        function reset() {-->
+<!--            // 重置表单-->
+<!--            $('#formId')[0].reset();-->
+<!--        }-->
+<!--    </script>-->
+</body>
+</html>

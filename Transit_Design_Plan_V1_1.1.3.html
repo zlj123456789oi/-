@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('网络包列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId"  action="/flow/find" method="post">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>
+                                    数据类型：</label>
+                                <input type="text" name="packetType"/>
+                            </li>
+                            <li>
+                                <label>
+                                    源IP：</label>
+                                <input type="text" name="sourceIPAddress"/>
+                            </li>
+                            <li>
+                                <label>目标IP：</label>
+                                <input type="text" name="destinationIPAddress"/>
+                            </li>
+                            <li>
+                                <label>源MAC：</label>
+                                <input type="text" name="sourceMACAddress"/>
+                            </li>
+                            <li>
+                                <label>目标MAC:</label>
+                                <input type="text" name="destinationMACAddress"/>
+                            </li>
+                            <li>
+                                <label>数据长度:</label>
+                                <input type="text" name="length"/>
+                            </li>
+                            <li>
+                                <label>源端口号：</label>
+                                <input type="text" name="sourcePort"/>
+                            </li>
+                            <li>
+                                <label>目标端口号</label>
+                                <input type="text" name="destinationPort"/>
+                            </li>
+                            <li>
+                                <button class="btn btn-primary btn-rounded btn-sm" type="submit"><i class="fa fa-search"></i>&nbsp;搜索</button>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+<!--            <div class="btn-group-sm" id="toolbar" role="group">-->
+<!--                <a class="btn btn-success" onclick="$.operate.add()" >-->
+<!--                    <i class="fa fa-plus"></i> 添加-->
+<!--                </a>-->
+<!--                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" >-->
+<!--                    <i class="fa fa-edit"></i> 修改-->
+<!--                </a>-->
+<!--                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" >-->
+<!--                    <i class="fa fa-remove"></i> 删除-->
+<!--                </a>-->
+<!--                <a class="btn btn-warning" onclick="$.table.exportExcel()" >-->
+<!--                    <i class="fa fa-download"></i> 导出-->
+<!--                </a>-->
+<!--            </div>-->
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+
+        var prefix =  "flow";
+        var flowlist = [[${flowlist}]];
+
+        $(function() {
+            var options = {
+                // url: prefix + "/list",
+                // createUrl: prefix + "/add",
+                // updateUrl: prefix + "/edit/{id}",
+                // removeUrl: prefix + "/remove",
+                // exportUrl: prefix + "/export",
+
+                data: flowlist,
+                pagination: false,
+                showSearch: false,
+
+                showRefresh: false,
+                showToggle: false,
+                showColumns: false,
+                sidePagination: "client",
+
+                modalName: "网络包",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    title: '',
+                    visible: false
+                },
+                {
+                    field: 'timestamp',
+                    title: '时间戳'
+                },
+                {
+                    field: 'sourceIPAddress',
+                    title: '源IP'
+                },
+                {
+                    field: 'destinationIPAddress',
+                    title: '目标IP'
+                },
+                {
+                    field: 'sourceMACAddress',
+                    title: '源MAC'
+                },
+                {
+                    field: 'destinationMACAddress',
+                    title: '目标MAC'
+                },
+                {
+                    field: 'length',
+                    title: '数据包长度'
+                },
+                {
+                    field: 'packetType',
+                    title: '数据包类型'
+                },
+                {
+                    field: 'sourcePort',
+                    title: '源端口号'
+                },
+                {
+                    field: 'destinationPort',
+                    title: '目标端口号'
+                }
+                ]
+            };
+            $.table.init(options);
+        });
+
+
+
+
+
+
+
+        function reset() {
+            // 重置表单
+            $('#formId')[0].reset();
+        }
+    </script>
+</body>
+</html>
